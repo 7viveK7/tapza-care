@@ -1,0 +1,31 @@
+[
+  {
+    "id": "rx-101",
+    "issuedAt": "2026-09-25",
+    "doctorName": "Dr. Venkat Raman",
+    "clinicName": "Tapza Clinic - Banjara Hills, Hyderabad",
+    "medicines": [
+      {
+        "id": "med-1",
+        "name": "Paracetamol 650mg",
+        "dose": "1 tablet after food",
+        "days": 5,
+        "timing": ["morning", "night"]
+      },
+      {
+        "id": "med-2",
+        "name": "Amoxicillin 500mg",
+        "dose": "1 capsule",
+        "days": 7,
+        "timing": ["morning", "afternoon", "night"]
+      },
+      {
+        "id": "med-3",
+        "name": "Pantoprazole 40mg",
+        "dose": "1 tablet before food",
+        "days": 10,
+        "timing": ["morning"]
+      }
+    ]
+  }
+]

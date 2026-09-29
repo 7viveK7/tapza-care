@@ -1,0 +1,26 @@
+[
+  {
+    "id": "doc-1",
+    "name": "Dr. Venkat Raman",
+    "specialty": "General Physician",
+    "photoUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300",
+    "feeInr": 500,
+    "languages": ["Telugu", "Hindi", "English"]
+  },
+  {
+    "id": "doc-2",
+    "name": "Dr. Sunitha Reddy",
+    "specialty": "Gynecologist & Obstetrician",
+    "photoUrl": "https://images.unsplash.com/photo-1594824813566-78853a152011?w=300",
+    "feeInr": 700,
+    "languages": ["Telugu", "English"]
+  },
+  {
+    "id": "doc-3",
+    "name": "Dr. Rajesh Varma",
+    "specialty": "Cardiologist",
+    "photoUrl": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300",
+    "feeInr": 1000,
+    "languages": ["Hindi", "English"]
+  }
+]
