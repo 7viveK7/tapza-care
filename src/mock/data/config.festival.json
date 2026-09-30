@@ -28,5 +28,129 @@
     "bookCta": "Book a Diwali-week visit",
     "feePrefix": "₹",
     "slotUnavailable": "This Deepavali slot was just taken. Please choose another time."
-  }
+  },
+  "sections": [
+    {
+      "id": "diwali-offer",
+      "type": "offerStrip",
+      "background": { "mode": "solid", "color": "festival" },
+      "message": "Deepavali week: evening diya-hour OPD · complimentary BP check with every consult."
+    },
+    {
+      "id": "hero",
+      "type": "heroBanner",
+      "background": {
+        "mode": "image",
+        "uri": "https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=1200",
+        "overlay": "secondary"
+      },
+      "greeting": "शुभ दीपावली · శుభ దీపావళి",
+      "title": "Festival care, still close to home",
+      "subtitle": "Book diya-hour slots in Hyderabad and Vijayawada before the rush."
+    },
+    {
+      "id": "categories",
+      "type": "categoryChips",
+      "background": { "mode": "solid", "color": "background" },
+      "items": [
+        { "id": "gp", "label": "Fever clinic" },
+        { "id": "gastric", "label": "Acidity" },
+        { "id": "child", "label": "Child care" },
+        { "id": "women", "label": "Women" },
+        { "id": "travel", "label": "Travel strain" },
+        { "id": "skin", "label": "Skin" }
+      ]
+    },
+    {
+      "id": "actions",
+      "type": "quickActions",
+      "background": { "mode": "solid", "color": "background" },
+      "items": [
+        { "id": "book", "label": "Book", "icon": "🪔", "href": "/(tabs)/bookings" },
+        { "id": "rx", "label": "Prescriptions", "icon": "💊", "href": "/(tabs)/prescriptions" },
+        { "id": "reminders", "label": "Reminders", "icon": "⏰", "href": "/(tabs)/prescriptions" },
+        { "id": "family", "label": "Family", "icon": "👨‍👩‍👧", "href": "/(tabs)/profile" }
+      ]
+    },
+    {
+      "id": "services",
+      "type": "serviceGrid",
+      "background": { "mode": "solid", "color": "background" },
+      "title": "Festival-week services",
+      "columns": 2,
+      "items": [
+        {
+          "id": "svc-fever",
+          "name": "Fever & viral",
+          "priceInr": 500,
+          "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400",
+          "badge": "Walk-in"
+        },
+        {
+          "id": "svc-gastric",
+          "name": "Acidity clinic",
+          "priceInr": 450,
+          "imageUrl": "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=400",
+          "badge": "Festive"
+        },
+        {
+          "id": "svc-tele",
+          "name": "Teleconsult",
+          "priceInr": 399,
+          "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400"
+        },
+        {
+          "id": "svc-child",
+          "name": "Pediatric visit",
+          "priceInr": 600,
+          "imageUrl": "https://images.unsplash.com/photo-1581595220892-b7fdcf318b8e?w=400"
+        }
+      ]
+    },
+    {
+      "id": "doctors",
+      "type": "doctorCarousel",
+      "background": { "mode": "solid", "color": "background" },
+      "title": "On call this Deepavali week",
+      "items": [
+        {
+          "id": "doc-1",
+          "name": "Dr. Venkat Raman",
+          "specialty": "General Physician",
+          "photoUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300",
+          "feeInr": 500
+        },
+        {
+          "id": "doc-4",
+          "name": "Dr. Lakshmi Narayana",
+          "specialty": "Pediatrician",
+          "photoUrl": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300",
+          "feeInr": 600
+        },
+        {
+          "id": "doc-6",
+          "name": "Dr. Suresh Babu",
+          "specialty": "Orthopedics",
+          "photoUrl": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300",
+          "feeInr": 750
+        }
+      ]
+    },
+    {
+      "id": "experimental-labs",
+      "type": "labPackageCarousel",
+      "title": "This unknown type must not crash Home"
+    },
+    {
+      "id": "closing-offer",
+      "type": "offerStrip",
+      "background": {
+        "mode": "gradient",
+        "colors": ["primary", "festival"],
+        "start": { "x": 0, "y": 0.5 },
+        "end": { "x": 1, "y": 0.5 }
+      },
+      "message": "शुभ रात्रि OPD till 9 PM · Governorpet walk-ins welcome."
+    }
+  ]
 }

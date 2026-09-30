@@ -11,6 +11,77 @@ export interface ThemeTokens {
   typeScale?: number;
 }
 
+export type ThemeColorToken =
+  | "primary"
+  | "secondary"
+  | "background"
+  | "surface"
+  | "textPrimary"
+  | "textSecondary"
+  | "accent"
+  | "festival";
+
+export type SectionBackground =
+  | {
+      mode: "solid";
+      color: ThemeColorToken;
+    }
+  | {
+      mode: "gradient";
+      colors: ThemeColorToken[];
+      start?: { x: number; y: number };
+      end?: { x: number; y: number };
+    }
+  | {
+      mode: "image";
+      uri: string;
+      overlay?: ThemeColorToken;
+    };
+
+export interface HomeCategoryChip {
+  id: string;
+  label: string;
+}
+
+export interface HomeQuickAction {
+  id: string;
+  label: string;
+  icon: string;
+  href: string;
+}
+
+export interface HomeService {
+  id: string;
+  name: string;
+  priceInr: number;
+  imageUrl: string;
+  badge?: string;
+}
+
+export interface HomeDoctorCard {
+  id: string;
+  name: string;
+  specialty: string;
+  photoUrl: string;
+  feeInr: number;
+}
+
+export interface HomeSection {
+  id: string;
+  type: string;
+  background?: SectionBackground;
+  greeting?: string;
+  title?: string;
+  subtitle?: string;
+  message?: string;
+  columns?: 2 | 3;
+  items?:
+    | HomeCategoryChip[]
+    | HomeQuickAction[]
+    | HomeService[]
+    | HomeDoctorCard[];
+}
+
 export interface LayoutFeatures {
   festivalBanner: boolean;
   walkInSlots: boolean;
@@ -37,6 +108,7 @@ export interface LayoutConfig {
   tokens: ThemeTokens;
   features: LayoutFeatures;
   copy: LayoutCopy;
+  sections: HomeSection[];
 }
 
 export const DEFAULT_THEME_TOKENS: ThemeTokens = {
@@ -50,6 +122,47 @@ export const DEFAULT_THEME_TOKENS: ThemeTokens = {
   spacingScale: 1,
   typeScale: 1,
 };
+
+export const DEFAULT_HOME_SECTIONS: HomeSection[] = [
+  {
+    id: "hero",
+    type: "heroBanner",
+    background: {
+      mode: "gradient",
+      colors: ["primary", "secondary"],
+      start: { x: 0, y: 0 },
+      end: { x: 1, y: 1 },
+    },
+    greeting: "Namaste",
+    title: "Care close to home",
+    subtitle: "Book trusted doctors across Hyderabad and Vijayawada.",
+  },
+  {
+    id: "categories",
+    type: "categoryChips",
+    background: { mode: "solid", color: "background" },
+    items: [
+      { id: "gp", label: "Physician" },
+      { id: "cardio", label: "Heart" },
+      { id: "child", label: "Child" },
+      { id: "women", label: "Women" },
+    ],
+  },
+  {
+    id: "actions",
+    type: "quickActions",
+    background: { mode: "solid", color: "background" },
+    items: [
+      { id: "book", label: "Book", icon: "📅", href: "/(tabs)/bookings" },
+      {
+        id: "rx",
+        label: "Prescriptions",
+        icon: "💊",
+        href: "/(tabs)/prescriptions",
+      },
+    ],
+  },
+];
 
 export const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
   version: "1.0.0",
@@ -71,4 +184,5 @@ export const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
     feePrefix: "₹",
     slotUnavailable: "This slot was just taken. Please pick another time.",
   },
+  sections: DEFAULT_HOME_SECTIONS,
 };

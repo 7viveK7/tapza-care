@@ -9,6 +9,17 @@ const hexColor = z
   .string()
   .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/);
 
+const ThemeColorTokenSchema = z.enum([
+  "primary",
+  "secondary",
+  "background",
+  "surface",
+  "textPrimary",
+  "textSecondary",
+  "accent",
+  "festival",
+]);
+
 const ThemeTokensSchema = z.looseObject({
   primary: hexColor,
   secondary: hexColor,
@@ -36,6 +47,41 @@ const LayoutCopySchema = z.looseObject({
   slotUnavailable: z.string().min(1),
 });
 
+const GradientPointSchema = z.looseObject({
+  x: z.number(),
+  y: z.number(),
+});
+
+const SectionBackgroundSchema = z.union([
+  z.looseObject({
+    mode: z.literal("solid"),
+    color: ThemeColorTokenSchema,
+  }),
+  z.looseObject({
+    mode: z.literal("gradient"),
+    colors: z.array(ThemeColorTokenSchema).min(1),
+    start: GradientPointSchema.optional(),
+    end: GradientPointSchema.optional(),
+  }),
+  z.looseObject({
+    mode: z.literal("image"),
+    uri: z.string().min(1),
+    overlay: ThemeColorTokenSchema.optional(),
+  }),
+]);
+
+const HomeSectionSchema = z.looseObject({
+  id: z.string().min(1),
+  type: z.string().min(1),
+  background: SectionBackgroundSchema.optional(),
+  greeting: z.string().optional(),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  message: z.string().optional(),
+  columns: z.union([z.literal(2), z.literal(3)]).optional(),
+  items: z.array(z.looseObject({})).optional(),
+});
+
 /**
  * Unknown keys are retained (forward-compatible remote config) and never
  * fail validation on their own. Invalid *required* fields fall back via
@@ -51,6 +97,7 @@ export const LayoutConfigSchema = z.looseObject({
   tokens: ThemeTokensSchema,
   features: LayoutFeaturesSchema,
   copy: LayoutCopySchema,
+  sections: z.array(HomeSectionSchema).optional().default([]),
 });
 
 export type LayoutConfigInput = z.input<typeof LayoutConfigSchema>;
