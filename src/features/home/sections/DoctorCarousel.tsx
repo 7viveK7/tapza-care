@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Href, router } from "expo-router";
+import { router } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useTheme } from "@/core/theme/useTheme";
@@ -54,7 +54,7 @@ export function DoctorCarousel({ section }: Props) {
           <Pressable
             key={doctor.id}
             accessibilityRole="button"
-            onPress={() => router.push(`/doctor/${doctor.id}` as Href)}
+            onPress={() => router.push(`/doctor/${doctor.id}`)}
             style={[
               styles.card,
               {
