@@ -65,4 +65,6 @@ export const storage = {
 export const STORAGE_KEYS = {
   /** Map of `{prescriptionId}:{medicineId}:{date}:{timing}` → boolean (`true` = taken). */
   DOSE_RECORDS: "dose_records_v1",
+  /** Last successfully fetched LayoutConfig — used as offline fallback. */
+  CONFIG_CACHE: "layout_config_cache_v1",
 } as const;
