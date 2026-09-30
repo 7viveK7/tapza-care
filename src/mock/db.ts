@@ -1,11 +1,11 @@
-import type {
-  BookingResponse,
-  Doctor,
-  LayoutConfig,
-  Prescription,
-  Slot,
-} from "../types";
 import { parseLayoutConfig } from "../core/config/schema";
+import type {
+    BookingResponse,
+    Doctor,
+    LayoutConfig,
+    Prescription,
+    Slot,
+} from "../types";
 import configFestival from "./data/config.festival.json";
 import configNormal from "./data/config.normal.json";
 import doctorsData from "./data/doctors.json";
@@ -84,6 +84,12 @@ class MockDB {
     };
     this.bookings.push(booking);
     return booking;
+  }
+
+  /** Reset booking state — for use in tests only. */
+  resetBookings(): void {
+    this.bookedSlotIds = new Set<string>();
+    this.bookings = [];
   }
 }
 
