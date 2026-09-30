@@ -3,28 +3,131 @@
     "id": "rx-101",
     "issuedAt": "2026-09-25",
     "doctorName": "Dr. Venkat Raman",
-    "clinicName": "Tapza Clinic - Banjara Hills, Hyderabad",
+    "clinicName": "Tapza Clinic — Banjara Hills, Hyderabad",
+    "patientName": "Ravi Teja",
+    "diagnosis": "Acute viral fever with gastritis",
+    "notes": "Hydrate well; review if fever persists beyond 72 hours.",
     "medicines": [
       {
-        "id": "med-1",
-        "name": "Paracetamol 650mg",
+        "id": "med-101-1",
+        "name": "Paracetamol 650 mg",
+        "dose": "1 tablet after food",
+        "days": 5,
+        "timing": ["morning", "night"],
+        "instructions": "Skip a dose if afebrile and pain-free."
+      },
+      {
+        "id": "med-101-2",
+        "name": "Amoxicillin 500 mg",
+        "dose": "1 capsule",
+        "days": 7,
+        "timing": ["morning", "afternoon", "night"],
+        "instructions": "Complete the full course even if you feel better."
+      },
+      {
+        "id": "med-101-3",
+        "name": "Pantoprazole 40 mg",
+        "dose": "1 tablet before food",
+        "days": 10,
+        "timing": ["morning"]
+      }
+    ]
+  },
+  {
+    "id": "rx-102",
+    "issuedAt": "2026-09-22",
+    "doctorName": "Dr. Rajesh Varma",
+    "clinicName": "Tapza Heart Centre — Banjara Hills, Hyderabad",
+    "patientName": "Sita Mahalakshmi",
+    "diagnosis": "Essential hypertension, dyslipidemia",
+    "notes": "Low-salt Andhra meals; morning walk 30 minutes; BP diary daily.",
+    "medicines": [
+      {
+        "id": "med-102-1",
+        "name": "Amlodipine 5 mg",
+        "dose": "1 tablet",
+        "days": 30,
+        "timing": ["morning"]
+      },
+      {
+        "id": "med-102-2",
+        "name": "Telmisartan 40 mg",
+        "dose": "1 tablet",
+        "days": 30,
+        "timing": ["morning"]
+      },
+      {
+        "id": "med-102-3",
+        "name": "Atorvastatin 10 mg",
+        "dose": "1 tablet after dinner",
+        "days": 30,
+        "timing": ["night"]
+      }
+    ]
+  },
+  {
+    "id": "rx-103",
+    "issuedAt": "2026-09-27",
+    "doctorName": "Dr. Lakshmi Narayana",
+    "clinicName": "Tapza Child Care — Governorpet, Vijayawada",
+    "patientName": "Anvika Chowdary",
+    "diagnosis": "Acute viral cough and cold",
+    "notes": "Steam inhalation twice daily; return if breathing is laboured.",
+    "medicines": [
+      {
+        "id": "med-103-1",
+        "name": "Cetirizine syrup 5 mg/5 ml",
+        "dose": "5 ml",
+        "days": 5,
+        "timing": ["night"],
+        "instructions": "May cause drowsiness."
+      },
+      {
+        "id": "med-103-2",
+        "name": "Ambroxol syrup",
+        "dose": "5 ml",
+        "days": 5,
+        "timing": ["morning", "afternoon", "night"]
+      },
+      {
+        "id": "med-103-3",
+        "name": "Paracetamol 250 mg/5 ml",
+        "dose": "5 ml if fever > 100°F",
+        "days": 3,
+        "timing": ["morning", "afternoon", "night"],
+        "instructions": "Leave at least 6 hours between doses."
+      }
+    ]
+  },
+  {
+    "id": "rx-104",
+    "issuedAt": "2026-09-28",
+    "doctorName": "Dr. Suresh Babu",
+    "clinicName": "Tapza Bone & Joint — MG Road, Vijayawada",
+    "patientName": "Prasad Rao",
+    "diagnosis": "Lumbar strain after festival travel",
+    "notes": "Avoid two-wheeler for 5 days; local heat pack after oil bath.",
+    "medicines": [
+      {
+        "id": "med-104-1",
+        "name": "Aceclofenac 100 mg",
         "dose": "1 tablet after food",
         "days": 5,
         "timing": ["morning", "night"]
       },
       {
-        "id": "med-2",
-        "name": "Amoxicillin 500mg",
-        "dose": "1 capsule",
-        "days": 7,
-        "timing": ["morning", "afternoon", "night"]
+        "id": "med-104-2",
+        "name": "Pantoprazole 40 mg",
+        "dose": "1 tablet before food",
+        "days": 5,
+        "timing": ["morning"]
       },
       {
-        "id": "med-3",
-        "name": "Pantoprazole 40mg",
-        "dose": "1 tablet before food",
-        "days": 10,
-        "timing": ["morning"]
+        "id": "med-104-3",
+        "name": "Thiocolchicoside 4 mg",
+        "dose": "1 tablet",
+        "days": 5,
+        "timing": ["night"]
       }
     ]
   }

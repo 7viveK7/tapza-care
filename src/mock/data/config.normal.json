@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "themeName": "normal",
+  "clinicName": "Tapza Care Clinics",
+  "region": "Hyderabad & Vijayawada",
+  "heroTitle": "Care close to home",
+  "heroSubtitle": "Book trusted doctors across Banjara Hills, Gachibowli, and Governorpet.",
+  "tokens": {
+    "primary": "#0F766E",
+    "secondary": "#115E59",
+    "background": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "textPrimary": "#0F172A",
+    "textSecondary": "#475569",
+    "accent": "#0284C7",
+    "spacingScale": 1,
+    "typeScale": 1
+  },
+  "features": {
+    "festivalBanner": false,
+    "walkInSlots": true,
+    "teleconsult": true,
+    "doseReminders": true
+  },
+  "copy": {
+    "greeting": "Namaste",
+    "bookCta": "Book visit",
+    "feePrefix": "₹",
+    "slotUnavailable": "This slot was just taken. Please pick another time."
+  }
+}

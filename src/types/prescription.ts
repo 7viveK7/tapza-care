@@ -6,6 +6,7 @@ export interface Medicine {
   dose: string;
   days: number;
   timing: Timing[];
+  instructions?: string;
 }
 
 export interface Prescription {
@@ -13,13 +14,16 @@ export interface Prescription {
   issuedAt: string;
   doctorName: string;
   clinicName: string;
+  patientName: string;
+  diagnosis: string;
   medicines: Medicine[];
+  notes?: string;
 }
 
 export interface DoseRecord {
   prescriptionId: string;
   medicineId: string;
-  date: string; // YYYY-MM-DD
+  date: string;
   timing: Timing;
   taken: boolean;
 }

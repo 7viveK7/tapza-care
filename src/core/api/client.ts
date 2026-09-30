@@ -1,59 +1,114 @@
 import { db } from "../../mock/db";
+import type { BookingPayload, BookingResponse } from "../../types";
 import { devSettings } from "./devSettings";
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const MOCK_ORIGIN = "https://mock.tapzacare.local";
+
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+export class SlotConflictError extends ApiError {
+  constructor(message = "Slot already taken by another patient") {
+    super(409, message);
+    this.name = "SlotConflictError";
+  }
+}
+
+const delay = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+function parseEndpoint(endpoint: string): URL {
+  try {
+    return new URL(endpoint, MOCK_ORIGIN);
+  } catch {
+    throw new ApiError(400, `Invalid endpoint: ${endpoint}`);
+  }
+}
+
+function parseJsonBody(body: RequestInit["body"]): unknown {
+  if (body == null) {
+    return undefined;
+  }
+  if (typeof body === "string") {
+    return JSON.parse(body) as unknown;
+  }
+  return body;
+}
+
+function isBookingPayload(value: unknown): value is BookingPayload {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const record = value as Record<string, unknown>;
+  return (
+    typeof record.doctorId === "string" &&
+    record.doctorId.length > 0 &&
+    typeof record.slotId === "string" &&
+    record.slotId.length > 0
+  );
+}
 
 export async function apiClient<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const { method = "GET", body } = options;
+  const method = (options.method ?? "GET").toUpperCase();
 
-  // 1. Simulate Latency[cite: 1]
   if (devSettings.latencyMs > 0) {
     await delay(devSettings.latencyMs);
   }
 
-  // 2. Simulate Network Failure[cite: 1]
   if (devSettings.forceFailure) {
-    throw new Error("Simulated Network Error: Service Unavailable (500)");
+    throw new ApiError(500, "Simulated Network Error: Service Unavailable (500)");
   }
 
-  // 3. Mock Endpoint Routing[cite: 1]
-  const url = new URL(endpoint, "https://mock.tapzacare.local");
+  const url = parseEndpoint(endpoint);
 
-  if (url.pathname === "/config") {
-    return db.getConfig(devSettings.isFestivalTheme) as unknown as T;
+  if (url.pathname === "/config" && method === "GET") {
+    return db.getConfig(devSettings.isFestivalTheme) as T;
   }
 
-  if (url.pathname === "/doctors") {
-    return db.getDoctors() as unknown as T;
+  if (url.pathname === "/doctors" && method === "GET") {
+    return db.getDoctors() as T;
   }
 
-  if (url.pathname === "/slots") {
-    const doctorId = url.searchParams.get("doctorId") || "doc-1";
-    const date = url.searchParams.get("date") || "2026-09-30";
-    return db.getSlots(doctorId, date) as unknown as T;
+  if (url.pathname === "/slots" && method === "GET") {
+    const doctorId = url.searchParams.get("doctorId");
+    const date = url.searchParams.get("date");
+    if (!doctorId || !date) {
+      throw new ApiError(400, "GET /slots requires doctorId and date query params");
+    }
+    return db.getSlots(doctorId, date) as T;
   }
 
   if (url.pathname === "/bookings" && method === "POST") {
-    const parsed = typeof body === "string" ? JSON.parse(body) : body;
-    const success = db.bookSlot(parsed.doctorId, parsed.slotId);
-    if (!success) {
-      throw { status: 409, message: "Slot already taken by another patient" }; // 409 Conflict[cite: 1]
+    const payload = parseJsonBody(options.body);
+    if (!isBookingPayload(payload)) {
+      throw new ApiError(400, "POST /bookings requires doctorId and slotId");
     }
-    return {
-      id: `BK-${Date.now()}`,
-      doctorId: parsed.doctorId,
-      slotId: parsed.slotId,
-      bookedAt: new Date().toISOString(),
-      status: "confirmed",
-    } as unknown as T;
+
+    const booking: BookingResponse | null = db.bookSlot(
+      payload.doctorId,
+      payload.slotId,
+    );
+    if (!booking) {
+      throw new SlotConflictError();
+    }
+    return booking as T;
   }
 
-  if (url.pathname === "/prescriptions") {
-    return db.getPrescriptions() as unknown as T;
+  if (url.pathname === "/prescriptions" && method === "GET") {
+    return db.getPrescriptions() as T;
   }
 
-  throw new Error(`Endpoint ${endpoint} not found on mock engine`);
+  throw new ApiError(404, `Endpoint ${method} ${url.pathname} not found on mock engine`);
 }

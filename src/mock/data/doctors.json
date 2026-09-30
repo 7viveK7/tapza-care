@@ -5,15 +5,23 @@
     "specialty": "General Physician",
     "photoUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300",
     "feeInr": 500,
-    "languages": ["Telugu", "Hindi", "English"]
+    "languages": ["Telugu", "Hindi", "English"],
+    "clinicName": "Tapza Clinic — Banjara Hills",
+    "city": "Hyderabad",
+    "experienceYears": 18,
+    "rating": 4.8
   },
   {
     "id": "doc-2",
     "name": "Dr. Sunitha Reddy",
     "specialty": "Gynecologist & Obstetrician",
-    "photoUrl": "https://images.unsplash.com/photo-1594824813566-78853a152011?w=300",
+    "photoUrl": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=300",
     "feeInr": 700,
-    "languages": ["Telugu", "English"]
+    "languages": ["Telugu", "English"],
+    "clinicName": "Tapza Women's Health — Jubilee Hills",
+    "city": "Hyderabad",
+    "experienceYears": 14,
+    "rating": 4.9
   },
   {
     "id": "doc-3",
@@ -21,6 +29,58 @@
     "specialty": "Cardiologist",
     "photoUrl": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300",
     "feeInr": 1000,
-    "languages": ["Hindi", "English"]
+    "languages": ["Hindi", "English"],
+    "clinicName": "Tapza Heart Centre — Banjara Hills",
+    "city": "Hyderabad",
+    "experienceYears": 22,
+    "rating": 4.7
+  },
+  {
+    "id": "doc-4",
+    "name": "Dr. Lakshmi Narayana",
+    "specialty": "Pediatrician",
+    "photoUrl": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300",
+    "feeInr": 600,
+    "languages": ["Telugu", "English"],
+    "clinicName": "Tapza Child Care — Governorpet",
+    "city": "Vijayawada",
+    "experienceYears": 16,
+    "rating": 4.8
+  },
+  {
+    "id": "doc-5",
+    "name": "Dr. Ayesha Khan",
+    "specialty": "Dermatologist",
+    "photoUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300",
+    "feeInr": 800,
+    "languages": ["Hindi", "English", "Urdu"],
+    "clinicName": "Tapza Skin Clinic — Gachibowli",
+    "city": "Hyderabad",
+    "experienceYears": 11,
+    "rating": 4.6
+  },
+  {
+    "id": "doc-6",
+    "name": "Dr. Suresh Babu",
+    "specialty": "Orthopedic Surgeon",
+    "photoUrl": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300",
+    "feeInr": 750,
+    "languages": ["Telugu", "Hindi", "English"],
+    "clinicName": "Tapza Bone & Joint — MG Road",
+    "city": "Vijayawada",
+    "experienceYears": 20,
+    "rating": 4.7
+  },
+  {
+    "id": "doc-7",
+    "name": "Dr. Meenakshi Iyer",
+    "specialty": "ENT Specialist",
+    "photoUrl": "https://images.unsplash.com/photo-1651009757985-0f9c47d3e9d4?w=300",
+    "feeInr": 650,
+    "languages": ["Hindi", "English", "Tamil"],
+    "clinicName": "Tapza ENT — Secunderabad",
+    "city": "Hyderabad",
+    "experienceYears": 12,
+    "rating": 4.5
   }
 ]

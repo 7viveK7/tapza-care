@@ -1,7 +1,7 @@
 export interface Slot {
   id: string;
   doctorId: string;
-  startsAt: string; // ISO date or time string
+  startsAt: string;
   endsAt: string;
   available: boolean;
 }
@@ -11,10 +11,14 @@ export interface BookingPayload {
   slotId: string;
 }
 
+export type BookingStatus = "confirmed" | "failed";
+
 export interface BookingResponse {
   id: string;
   doctorId: string;
   slotId: string;
   bookedAt: string;
-  status: "confirmed" | "failed";
+  status: BookingStatus;
 }
+
+export type Booking = BookingResponse;

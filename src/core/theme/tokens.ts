@@ -4,7 +4,7 @@ export const spacing = {
   md: 16,
   lg: 24,
   xl: 32,
-};
+} as const;
 
 export const typography = {
   sizes: {
@@ -15,5 +15,15 @@ export const typography = {
     xl: 22,
     xxl: 28,
   },
-  touchTargetMin: 44, // Accessible touch target >= 44pt[cite: 1]
-};
+  /** Apple HIG / WCAG-aligned minimum interactive size (points). */
+  touchTargetMin: 44,
+} as const;
+
+export const accessibility = {
+  minTouchTargetPt: 44,
+  minContrastRatio: 4.5,
+  hitSlop: { top: 8, right: 8, bottom: 8, left: 8 } as const,
+} as const;
+
+export type SpacingToken = keyof typeof spacing;
+export type TypeSizeToken = keyof typeof typography.sizes;

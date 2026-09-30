@@ -1,0 +1,32 @@
+{
+  "version": "1.1.0",
+  "themeName": "festival",
+  "clinicName": "Tapza Care Clinics",
+  "region": "Hyderabad, Vijayawada & the Godavari belt",
+  "heroTitle": "शुभ दीपावली · శుభ దీపావళి",
+  "heroSubtitle": "Festival-week OPDs, evening diya-hour slots, and walk-in counters at Banjara Hills and Governorpet.",
+  "tokens": {
+    "primary": "#B45309",
+    "secondary": "#7C2D12",
+    "background": "#FFF7ED",
+    "surface": "#FFEDD5",
+    "textPrimary": "#431407",
+    "textSecondary": "#9A3412",
+    "accent": "#CA8A04",
+    "festival": "#DC2626",
+    "spacingScale": 1,
+    "typeScale": 1
+  },
+  "features": {
+    "festivalBanner": true,
+    "walkInSlots": true,
+    "teleconsult": true,
+    "doseReminders": true
+  },
+  "copy": {
+    "greeting": "Shubh Deepavali",
+    "bookCta": "Book a Diwali-week visit",
+    "feePrefix": "₹",
+    "slotUnavailable": "This Deepavali slot was just taken. Please choose another time."
+  }
+}

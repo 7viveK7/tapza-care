@@ -1,5 +1,19 @@
-export const devSettings = {
-  latencyMs: 0, // Toggle via Dev Panel (e.g., 2000ms)[cite: 1]
-  forceFailure: false, // Toggle 500 error state via Dev Panel[cite: 1]
-  isFestivalTheme: false,
+export type DevSettings = {
+  latencyMs: number;
+  forceFailure: boolean;
+  isFestivalTheme: boolean;
 };
+
+class DevSettingsStore implements DevSettings {
+  latencyMs = 0;
+  forceFailure = false;
+  isFestivalTheme = false;
+
+  reset(): void {
+    this.latencyMs = 0;
+    this.forceFailure = false;
+    this.isFestivalTheme = false;
+  }
+}
+
+export const devSettings = new DevSettingsStore();

@@ -1,34 +1,35 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { ThemeTokens } from "../../types/config";
-import { AppTheme, createTheme } from "./createTheme";
+import {
+  createContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
-const defaultTokens: ThemeTokens = {
-  primary: "#0052CC",
-  secondary: "#0747A6",
-  background: "#F4F5F7",
-  surface: "#FFFFFF",
-  textPrimary: "#172B4D",
-  textSecondary: "#5E6C84",
-  accent: "#00875A",
+import { DEFAULT_THEME_TOKENS, type ThemeTokens } from "../../types/config";
+import { createTheme, type AppTheme } from "./createTheme";
+
+export type ThemeContextValue = {
+  theme: AppTheme;
+  tokens: ThemeTokens;
+  updateThemeTokens: (tokens: ThemeTokens) => void;
 };
 
-const ThemeContext = createContext<{
-  theme: AppTheme;
-  updateThemeTokens: (tokens: ThemeTokens) => void;
-}>({
-  theme: createTheme(defaultTokens),
-  updateThemeTokens: () => {},
-});
+export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [tokens, setTokens] = useState<ThemeTokens>(defaultTokens);
-  const theme = createTheme(tokens);
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [tokens, setTokens] = useState<ThemeTokens>(DEFAULT_THEME_TOKENS);
+  const theme = useMemo(() => createTheme(tokens), [tokens]);
+
+  const value = useMemo(
+    () => ({
+      theme,
+      tokens,
+      updateThemeTokens: setTokens,
+    }),
+    [theme, tokens],
+  );
 
   return (
-    <ThemeContext.Provider value={{ theme, updateThemeTokens: setTokens }}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
-};
-
-export const useTheme = () => useContext(ThemeContext);
+}
