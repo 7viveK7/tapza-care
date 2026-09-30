@@ -6,10 +6,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { apiClient } from "@/core/api/client";
+import { useLocale } from "@/core/i18n/LocaleContext";
 import { useTheme } from "@/core/theme/useTheme";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { ErrorState } from "@/shared/components/ErrorState";
 import { SkeletonCard } from "@/shared/components/Skeleton";
+import { t } from "@/shared/utils/i18n";
 import type { Prescription } from "@/types";
 
 import { PrescriptionCard } from "./components/PrescriptionCard";
@@ -49,6 +51,7 @@ export function PrescriptionsList() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { data, isPending, isError, refetch } = usePrescriptions();
+  useLocale(); // re-render on locale change
 
   const handlePress = useCallback((id: string) => {
     // expo-router typed routes: /prescription/[id]
@@ -90,7 +93,7 @@ export function PrescriptionsList() {
             lineHeight: 36,
           }}
         >
-          Prescriptions
+          {t("prescriptions")}
         </Text>
         <Text
           style={{
@@ -100,7 +103,7 @@ export function PrescriptionsList() {
             lineHeight: 22,
           }}
         >
-          Your treatment plans and medicine schedules
+          {t("todaySchedule")}
         </Text>
       </View>
 
@@ -111,15 +114,15 @@ export function PrescriptionsList() {
         </View>
       ) : isError ? (
         <ErrorState
-          message="Couldn't load prescriptions"
-          description="Check your connection and try again."
+          message={t("errorGeneric")}
+          description={t("errorNetwork")}
           onRetry={() => void refetch()}
         />
       ) : !data || data.length === 0 ? (
         <EmptyState
           icon="💊"
-          message="No prescriptions yet"
-          description="Your doctor's prescriptions will appear here after a visit."
+          message={t("emptyPrescriptions")}
+          description={t("todaySchedule")}
         />
       ) : (
         <FlashList

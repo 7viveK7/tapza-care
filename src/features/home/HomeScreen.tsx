@@ -1,17 +1,19 @@
 import { useLayoutEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
-    useAnimatedScrollHandler,
-    useSharedValue,
+  useAnimatedScrollHandler,
+  useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useLocale } from "@/core/i18n/LocaleContext";
 import { useTheme } from "@/core/theme/useTheme";
+import { t } from "@/shared/utils/i18n";
 import type { HomeSection } from "@/types/config";
 
 import {
-    CollapsingHeader,
-    HEADER_EXPANDED,
+  CollapsingHeader,
+  HEADER_EXPANDED,
 } from "./components/CollapsingHeader";
 import { SectionRenderer } from "./components/SectionRenderer";
 import { HomeSkeleton } from "./HomeSkeleton";
@@ -23,6 +25,7 @@ export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const scrollY = useSharedValue(0);
   const { data, isPending, isError, refetch, isRefetching } = useLayoutConfig();
+  useLocale(); // re-render on locale change
 
   useLayoutEffect(() => {
     if (data?.tokens) {
@@ -59,7 +62,7 @@ export function HomeScreen() {
             textAlign: "center",
           }}
         >
-          Home could not be loaded
+          {t("errorGeneric")}
         </Text>
         <Pressable
           accessibilityRole="button"
@@ -83,7 +86,7 @@ export function HomeScreen() {
               fontSize: theme.typography.sizes.md,
             }}
           >
-            {isRefetching ? "Retrying…" : "Retry"}
+            {isRefetching ? t("loading") : t("retry")}
           </Text>
         </Pressable>
       </View>

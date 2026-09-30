@@ -1,31 +1,33 @@
 import {
-    BottomSheetBackdrop,
-    BottomSheetModal,
-    BottomSheetScrollView,
-    type BottomSheetBackdropProps,
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetScrollView,
+  type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
 import {
-    forwardRef,
-    useCallback,
-    useImperativeHandle,
-    useMemo,
-    useRef,
-    useState,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import {
-    ActivityIndicator,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useLocale } from "@/core/i18n/LocaleContext";
 import { useTheme } from "@/core/theme/useTheme";
 import { ErrorState } from "@/shared/components/ErrorState";
 import { useHaptics } from "@/shared/hooks/useHaptics";
 import { formatInr } from "@/shared/utils/currency";
 import { formatSlotTime, toISODate } from "@/shared/utils/date";
+import { t } from "@/shared/utils/i18n";
 import type { BookingResponse, Doctor, Slot } from "@/types";
 
 import { DateStrip } from "./components/DateStrip";
@@ -118,6 +120,7 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
     const { theme } = useTheme();
     const insets = useSafeAreaInsets();
     const { confirmFeedback, successFeedback, snapFeedback } = useHaptics();
+    useLocale(); // re-render on locale change
 
     // --- Date state: default to today ------------------------------------
     const [selectedDate, setSelectedDate] = useState<string>(() =>
@@ -213,10 +216,10 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
         : undefined;
 
     const ctaLabel = isBooking
-      ? "Confirming…"
+      ? t("loading")
       : selectedSlot
-        ? `Confirm — ${formatSlotTime(selectedSlot.startsAt)}`
-        : "Select a slot";
+        ? `${t("bookAppointment")} — ${formatSlotTime(selectedSlot.startsAt)}`
+        : t("availableSlots");
 
     // --- Render -----------------------------------------------------------
     return (
@@ -279,7 +282,7 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
                   },
                 ]}
               >
-                Done
+                {t("done")}
               </Text>
             </Pressable>
           </BottomSheetScrollView>
@@ -346,7 +349,7 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
                     },
                   ]}
                 >
-                  Select Date
+                  {t("selectDate")}
                 </Text>
                 <DateStrip
                   selectedDate={selectedDate}
@@ -376,7 +379,7 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
                   },
                 ]}
               >
-                Available Slots
+                {t("availableSlots")}
               </Text>
 
               {/* Slots — loading / error / grid */}
@@ -384,9 +387,9 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
                 <SlotSkeleton />
               ) : slotsError ? (
                 <ErrorState
-                  message="Couldn't load slots"
-                  description="Check your connection and try again."
-                  retryLabel="Retry"
+                  message={t("errorGeneric")}
+                  description={t("errorNetwork")}
+                  retryLabel={t("retry")}
                   onRetry={() => void refetchSlots()}
                 />
               ) : (
@@ -416,6 +419,7 @@ export const BookingSheet = forwardRef<BookingSheetHandle, Props>(
                   backgroundColor: theme.colors.background,
                   borderTopWidth: StyleSheet.hairlineWidth,
                   borderTopColor: theme.colors.textSecondary + "22",
+                  marginBottom: insets.bottom + insets.top,
                 },
               ]}
             >

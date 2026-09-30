@@ -4,14 +4,22 @@ import { useCallback } from "react";
 import { t } from "@/shared/utils/i18n";
 import type { Medicine, Prescription, Timing } from "@/types";
 
+import {
+    safeCancelNotification,
+    safeRequestPermissions,
+    safeScheduleNotification,
+    safeSetNotificationHandler,
+} from "./notificationsGuard";
+
 // ─── Notification channel setup ───────────────────────────────────────────────
 
 /**
  * Configure the default notification presentation behaviour.
  * Call once near app startup (e.g. in `app/_layout.tsx`).
+ * No-ops silently in Expo Go.
  */
 export function configureDoseNotifications(): void {
-  Notifications.setNotificationHandler({
+  safeSetNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
@@ -25,9 +33,9 @@ export function configureDoseNotifications(): void {
 // ─── Timing → local hour mapping ─────────────────────────────────────────────
 
 const TIMING_HOURS: Record<Timing, number> = {
-  morning:   8,   // 08:00
-  afternoon: 13,  // 13:00
-  night:     21,  // 21:00
+  morning: 8, // 08:00
+  afternoon: 13, // 13:00
+  night: 21, // 21:00
 };
 
 // ─── Identifier helpers ───────────────────────────────────────────────────────
@@ -49,25 +57,18 @@ function doseNotificationId(
 /**
  * Request notification permissions if not already granted.
  * Returns `true` if permission was granted, `false` otherwise.
+ * Returns `false` in Expo Go without throwing.
  */
 export async function requestNotificationPermissions(): Promise<boolean> {
-  const { status: existing } = await Notifications.getPermissionsAsync();
-  if (existing === "granted") return true;
-
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === "granted";
+  const { granted } = await safeRequestPermissions();
+  return granted;
 }
 
 // ─── Schedule helpers ─────────────────────────────────────────────────────────
 
 /**
  * Schedule a daily repeating dose reminder for one medicine timing slot.
- *
- * Uses a `CalendarNotificationTrigger` (daily repeat at a fixed hour/minute)
- * so the same notification fires every day for the treatment duration.
- *
- * If a notification with the same identifier already exists it is cancelled
- * and rescheduled to prevent duplicates.
+ * No-ops silently in Expo Go.
  */
 async function scheduleDoseReminder(
   prescriptionId: string,
@@ -77,11 +78,11 @@ async function scheduleDoseReminder(
   const id = doseNotificationId(prescriptionId, medicine.id, timing);
 
   // Cancel any previous registration for this slot.
-  await Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined);
+  await safeCancelNotification(id);
 
   const hour = TIMING_HOURS[timing];
 
-  await Notifications.scheduleNotificationAsync({
+  await safeScheduleNotification({
     identifier: id,
     content: {
       title: t("reminderTitle"),
@@ -110,7 +111,7 @@ async function cancelDoseReminder(
   timing: Timing,
 ): Promise<void> {
   const id = doseNotificationId(prescriptionId, medicineId, timing);
-  await Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined);
+  await safeCancelNotification(id);
 }
 
 // ─── Public hook ──────────────────────────────────────────────────────────────
@@ -118,9 +119,11 @@ async function cancelDoseReminder(
 export type UseDoseRemindersResult = {
   /**
    * Schedule daily reminders for every timing slot in a prescription.
-   * Requests permission first — silently does nothing if denied.
+   * Requests permission first — silently does nothing if denied or in Expo Go.
    */
-  scheduleRemindersForPrescription: (prescription: Prescription) => Promise<void>;
+  scheduleRemindersForPrescription: (
+    prescription: Prescription,
+  ) => Promise<void>;
 
   /**
    * Cancel all reminders tied to a specific prescription.

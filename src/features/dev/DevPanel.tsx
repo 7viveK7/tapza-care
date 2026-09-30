@@ -1,27 +1,31 @@
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
+
 import {
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    View,
-} from "react-native";
+  notificationsAvailable,
+  safeRequestPermissions,
+  safeScheduleNotification,
+} from "@/features/notifications/notificationsGuard";
+
+import { useCallback, useState } from "react";
+import { Alert, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import Animated, {
-    FadeIn,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 
 import { devSettings } from "@/core/api/devSettings";
 import { clearConfigCache } from "@/core/config/cache";
+import { useLocale } from "@/core/i18n/LocaleContext";
 import type { AppTheme } from "@/core/theme/createTheme";
 import { useTheme } from "@/core/theme/useTheme";
 import { layoutConfigQueryKey } from "@/features/home/useLayoutConfig";
 import { useHaptics } from "@/shared/hooks/useHaptics";
+import type { Locale } from "@/shared/utils/i18n";
 
 // ─── Hardcoded festival tokens (matches config.festival.json) ──────────────────
 // We apply them directly so the theme switches instantly without waiting for
@@ -55,6 +59,15 @@ const NORMAL_TOKENS = {
 
 const LATENCY_PRESETS = [0, 300, 800, 1500, 2000] as const;
 type LatencyPreset = (typeof LATENCY_PRESETS)[number];
+
+// ─── Locale options ────────────────────────────────────────────────────────────
+
+const LOCALE_OPTIONS: { locale: Locale; label: string; nativeLabel: string }[] =
+  [
+    { locale: "en", label: "EN", nativeLabel: "English" },
+    { locale: "hi", label: "हिं", nativeLabel: "Hindi" },
+    { locale: "te", label: "తె", nativeLabel: "Telugu" },
+  ];
 
 // ─── Subcomponents ────────────────────────────────────────────────────────────
 
@@ -137,6 +150,7 @@ type Props = {
 
 export function DevPanel({ onClose }: Props) {
   const { theme, updateThemeTokens } = useTheme();
+  const { locale, changeLocale } = useLocale();
   const queryClient = useQueryClient();
   const { selectionFeedback, themeSwitchFeedback, errorFeedback } =
     useHaptics();
@@ -209,6 +223,77 @@ export function DevPanel({ onClose }: Props) {
     },
     [themeSwitchFeedback, updateThemeTokens, invalidateConfig, flashBadge],
   );
+
+  // ── Locale ────────────────────────────────────────────────────────────────
+  const handleLocaleSelect = useCallback(
+    (next: Locale) => {
+      selectionFeedback();
+      changeLocale(next);
+    },
+    [selectionFeedback, changeLocale],
+  );
+
+  // ── Notifications & deep links ────────────────────────────────────────────
+
+  /** Fire a test notification that resolves to /prescription/rx-101 when tapped. */
+  const handleTestNotification = useCallback(async () => {
+    selectionFeedback();
+    if (!notificationsAvailable) {
+      Alert.alert(
+        "Not available in Expo Go",
+        "Push notifications require a development build.\n\nRun: npx expo run:ios  or  npx expo run:android",
+      );
+      return;
+    }
+    const { granted } = await safeRequestPermissions();
+    if (!granted) {
+      Alert.alert(
+        "Permission denied",
+        "Enable notifications in Settings to test this feature.",
+      );
+      return;
+    }
+    await safeScheduleNotification({
+      content: {
+        title: "💊 Tapza Care Reminder",
+        body: "Time to take your dose: Paracetamol 500 mg",
+        data: { prescriptionId: "rx-101" },
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 3,
+        repeats: false,
+      },
+    });
+    Alert.alert(
+      "Notification scheduled",
+      "It will arrive in ~3 seconds. Tap it to test deep linking to /prescription/rx-101.",
+    );
+  }, [selectionFeedback]);
+
+  /** Navigate directly via the deep-link scheme — tests tapzacare:// routing. */
+  const handleDeepLinkDoctor = useCallback(() => {
+    selectionFeedback();
+    onClose?.();
+    // Small delay so the sheet finishes dismissing before navigation.
+    setTimeout(
+      () => router.push("/doctor/doc-1" as Parameters<typeof router.push>[0]),
+      300,
+    );
+  }, [selectionFeedback, onClose]);
+
+  const handleDeepLinkPrescription = useCallback(() => {
+    selectionFeedback();
+    onClose?.();
+    setTimeout(
+      () =>
+        router.push(
+          "/prescription/rx-101" as Parameters<typeof router.push>[0],
+        ),
+      300,
+    );
+  }, [selectionFeedback, onClose]);
 
   // ── Reset ─────────────────────────────────────────────────────────────────
   const handleReset = useCallback(() => {
@@ -297,7 +382,7 @@ export function DevPanel({ onClose }: Props) {
       </View>
 
       {/* ── Scrollable controls ───────────────────────────────────────── */}
-      <ScrollView
+      <BottomSheetScrollView
         contentContainerStyle={{
           paddingHorizontal: theme.spacing.lg,
           paddingBottom: theme.spacing.xl,
@@ -317,6 +402,7 @@ export function DevPanel({ onClose }: Props) {
               paddingHorizontal: theme.spacing.md,
               paddingVertical: theme.spacing.md,
               marginBottom: theme.spacing.sm,
+              flexDirection: "column",
             },
           ]}
         >
@@ -422,6 +508,241 @@ export function DevPanel({ onClose }: Props) {
           />
         </SettingRow>
 
+        {/* ── Language ──────────────────────────────────────────────── */}
+        <SectionLabel label="Language" theme={theme} />
+
+        <View
+          style={[
+            styles.settingRow,
+            {
+              backgroundColor: theme.colors.surface,
+              borderRadius: 12,
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.md,
+              marginBottom: theme.spacing.sm,
+              flexDirection: "column",
+              alignItems: "flex-start",
+            },
+          ]}
+        >
+          <Text
+            style={{
+              color: theme.colors.textPrimary,
+              fontSize: theme.typography.sizes.md,
+              fontWeight: "600",
+              marginBottom: theme.spacing.xs,
+            }}
+          >
+            UI Language
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              fontSize: theme.typography.sizes.xs,
+              marginBottom: theme.spacing.sm,
+            }}
+          >
+            Changes all screen text — persisted across restarts
+          </Text>
+          <View style={[styles.chipsRow, { gap: theme.spacing.sm }]}>
+            {LOCALE_OPTIONS.map(({ locale: loc, label, nativeLabel }) => {
+              const selected = locale === loc;
+              return (
+                <Pressable
+                  key={loc}
+                  onPress={() => handleLocaleSelect(loc)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Switch language to ${nativeLabel}`}
+                  accessibilityState={{ selected }}
+                  style={[
+                    styles.latencyChip,
+                    {
+                      minHeight: theme.typography.touchTargetMin,
+                      paddingHorizontal: theme.spacing.md,
+                      borderRadius: 10,
+                      borderWidth: 1.5,
+                      backgroundColor: selected
+                        ? theme.colors.primary
+                        : "transparent",
+                      borderColor: selected
+                        ? theme.colors.primary
+                        : theme.colors.textSecondary + "44",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={{
+                      color: selected
+                        ? theme.colors.surface
+                        : theme.colors.textPrimary,
+                      fontSize: theme.typography.sizes.sm,
+                      fontWeight: "700",
+                    }}
+                  >
+                    {label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* ── Notifications & Deep Links ────────────────────────────── */}
+        <SectionLabel label="Notifications & Deep Links" theme={theme} />
+
+        {/* Test push notification */}
+        <View
+          style={[
+            styles.settingRow,
+            {
+              backgroundColor: theme.colors.surface,
+              borderRadius: 12,
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.md,
+              marginBottom: theme.spacing.sm,
+              flexDirection: "column",
+              alignItems: "flex-start",
+            },
+          ]}
+        >
+          <Text
+            style={{
+              color: theme.colors.textPrimary,
+              fontSize: theme.typography.sizes.md,
+              fontWeight: "600",
+              marginBottom: theme.spacing.xs,
+            }}
+          >
+            Test Push Notification
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              fontSize: theme.typography.sizes.xs,
+              marginBottom: theme.spacing.sm,
+              lineHeight: 16,
+            }}
+          >
+            Fires in 3 s · tap it to deep-link to /prescription/rx-101
+          </Text>
+          <Pressable
+            onPress={() => void handleTestNotification()}
+            accessibilityRole="button"
+            accessibilityLabel="Fire test notification"
+            style={({ pressed }) => ({
+              minHeight: theme.typography.touchTargetMin,
+              paddingHorizontal: theme.spacing.lg,
+              borderRadius: 10,
+              alignItems: "center" as const,
+              justifyContent: "center" as const,
+              backgroundColor: pressed
+                ? theme.colors.secondary
+                : theme.colors.primary,
+            })}
+          >
+            <Text
+              style={{
+                color: theme.colors.surface,
+                fontSize: theme.typography.sizes.sm,
+                fontWeight: "700",
+              }}
+            >
+              🔔 Fire notification
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* Deep-link shortcuts */}
+        <View
+          style={[
+            styles.settingRow,
+            {
+              backgroundColor: theme.colors.surface,
+              borderRadius: 12,
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.md,
+              marginBottom: theme.spacing.sm,
+              flexDirection: "column",
+              alignItems: "flex-start",
+            },
+          ]}
+        >
+          <Text
+            style={{
+              color: theme.colors.textPrimary,
+              fontSize: theme.typography.sizes.md,
+              fontWeight: "600",
+              marginBottom: theme.spacing.xs,
+            }}
+          >
+            Deep-link Shortcuts
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.textSecondary,
+              fontSize: theme.typography.sizes.xs,
+              marginBottom: theme.spacing.sm,
+              lineHeight: 16,
+            }}
+          >
+            tapzacare://doctor/doc-1 · tapzacare://prescription/rx-101
+          </Text>
+          <View style={[styles.chipsRow, { gap: theme.spacing.sm }]}>
+            <Pressable
+              onPress={handleDeepLinkDoctor}
+              accessibilityRole="button"
+              accessibilityLabel="Navigate to doctor detail via deep link"
+              style={[
+                styles.latencyChip,
+                {
+                  minHeight: theme.typography.touchTargetMin,
+                  paddingHorizontal: theme.spacing.md,
+                  borderRadius: 10,
+                  borderWidth: 1.5,
+                  backgroundColor: "transparent",
+                  borderColor: theme.colors.primary,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: theme.typography.sizes.sm,
+                  fontWeight: "700",
+                }}
+              >
+                👨‍⚕️ Doctor
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={handleDeepLinkPrescription}
+              accessibilityRole="button"
+              accessibilityLabel="Navigate to prescription detail via deep link"
+              style={[
+                styles.latencyChip,
+                {
+                  minHeight: theme.typography.touchTargetMin,
+                  paddingHorizontal: theme.spacing.md,
+                  borderRadius: 10,
+                  borderWidth: 1.5,
+                  backgroundColor: "transparent",
+                  borderColor: theme.colors.primary,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: theme.typography.sizes.sm,
+                  fontWeight: "700",
+                }}
+              >
+                💊 Prescription
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
         {/* ── Active overrides summary ───────────────────────────────── */}
         {isActive ? (
           <View
@@ -507,7 +828,7 @@ export function DevPanel({ onClose }: Props) {
             Reset All Settings & Cache
           </Text>
         </Pressable>
-      </ScrollView>
+      </BottomSheetScrollView>
     </Animated.View>
   );
 }

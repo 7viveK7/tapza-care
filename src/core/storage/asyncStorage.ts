@@ -67,4 +67,6 @@ export const STORAGE_KEYS = {
   DOSE_RECORDS: "dose_records_v1",
   /** Last successfully fetched LayoutConfig — used as offline fallback. */
   CONFIG_CACHE: "layout_config_cache_v1",
+  /** User's explicitly chosen UI locale ("en" | "hi" | "te"). */
+  LOCALE: "ui_locale_v1",
 } as const;
