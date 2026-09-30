@@ -83,7 +83,7 @@ npm run test:watch
 To install and run the build directly on an Android device:
 
 1. **Download the APK:** Use the [EAS Build Download Link]
-   https://expo.dev/accounts/visify/projects/tapza-care/builds/99246ee3-82e4-47e7-91eb-edddab027d52.
+   https://expo.dev/accounts/visify/projects/tapza-care/builds/e3a4c552-fa36-4710-9c4a-4a99d0acc4f2
 2. **Install on Android:**
    - Open the `.apk` file on your device.
    - Enable **"Install from unknown sources"** if prompted by your system.
