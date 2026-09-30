@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { useTheme } from "@/core/theme/useTheme";
 import type { HomeSection } from "@/types/config";
+import { useLayoutConfigContext } from "../LayoutConfigContext";
 
 type Props = {
   section: HomeSection;
@@ -9,6 +10,11 @@ type Props = {
 
 export function HeroBanner({ section }: Props) {
   const { theme } = useTheme();
+  const config = useLayoutConfigContext();
+
+  // section.greeting wins (set per-section in JSON); fall back to copy.greeting
+  // from the layout config (e.g. "Namaste" for normal, "Shubh Deepavali" for festival).
+  const greeting = section.greeting ?? config?.copy.greeting;
 
   return (
     <View
@@ -20,7 +26,7 @@ export function HeroBanner({ section }: Props) {
         },
       ]}
     >
-      {section.greeting ? (
+      {greeting ? (
         <Text
           style={[
             styles.greeting,
@@ -31,7 +37,7 @@ export function HeroBanner({ section }: Props) {
             },
           ]}
         >
-          {section.greeting}
+          {greeting}
         </Text>
       ) : null}
       <Text

@@ -1,17 +1,21 @@
 import { useLayoutEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
-  useAnimatedScrollHandler,
-  useSharedValue,
+    useAnimatedScrollHandler,
+    useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/core/theme/useTheme";
 import type { HomeSection } from "@/types/config";
 
-import { CollapsingHeader, HEADER_EXPANDED } from "./components/CollapsingHeader";
+import {
+    CollapsingHeader,
+    HEADER_EXPANDED,
+} from "./components/CollapsingHeader";
 import { SectionRenderer } from "./components/SectionRenderer";
 import { HomeSkeleton } from "./HomeSkeleton";
+import { LayoutConfigProvider } from "./LayoutConfigContext";
 import { useLayoutConfig } from "./useLayoutConfig";
 
 export function HomeScreen() {
@@ -95,20 +99,22 @@ export function HomeScreen() {
         subtitle={data.region}
         scrollY={scrollY}
       />
-      <Animated.FlatList
-        data={data.sections}
-        keyExtractor={(item: HomeSection) => item.id}
-        renderItem={({ item, index }) => (
-          <SectionRenderer section={item} index={index} />
-        )}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: headerOffset,
-          paddingBottom: insets.bottom + theme.spacing.xl,
-        }}
-      />
+      <LayoutConfigProvider config={data}>
+        <Animated.FlatList
+          data={data.sections}
+          keyExtractor={(item: HomeSection) => item.id}
+          renderItem={({ item, index }) => (
+            <SectionRenderer section={item} index={index} />
+          )}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop: headerOffset,
+            paddingBottom: insets.bottom + theme.spacing.xl,
+          }}
+        />
+      </LayoutConfigProvider>
     </View>
   );
 }
